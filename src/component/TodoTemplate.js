@@ -9,30 +9,10 @@ const TodoTemplate = () => {
 
 
     // 서버에 할일 목록(json)을 요청해서 받아와야 함
+    const API_BASE_URL = 'http://localhost:8181/api/todos';
     
     // todos배열을 상태관리
-    const [todos, setTodos] = useState([
-      {
-          id: 1,
-          title: '아침 산책하기',
-          done: true
-      },
-      {
-          id: 2,
-          title: '오늘 주간 신문 읽기',
-          done: true
-      },
-      {
-          id: 3,
-          title: '샌드위치 사먹기',
-          done: false
-      },
-      {
-          id: 4,
-          title: '리액트 복습하기',
-          done: false
-      },
-  ]);
+    const [todos, setTodos] = useState([]);
 
     // id값 시퀀스 생성 함수
     const makeNewId = () => {
@@ -45,9 +25,7 @@ const TodoTemplate = () => {
         // console.log('할일 정보 in TodoTemplate: ', todoText);
 
         const newTodo = {
-          id: makeNewId(),
-          title: todoText,
-          done: false
+          title: todoText
         };
 
         // todos.push(newTodo);
@@ -60,19 +38,48 @@ const TodoTemplate = () => {
         // const copyTodos = todos.slice();
         // copyTodos.push(newTodo);
 
-        setTodos([...todos, newTodo]);
+        fetch(API_BASE_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(newTodo)
+        })
+        .then(res => res.json())
+        .then(json => {
+          setTodos(json.todos);
+        });
     };
 
 
     // 할 일 삭제 처리 함수
     const removeTodo = id => {
       // console.log(`삭제대상 id: ${id}`);
-      setTodos(todos.filter(todo => todo.id !== id));
+      // setTodos(todos.filter(todo => todo.id !== id));
+
+      fetch(`${API_BASE_URL}/${id}`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(json => {
+        setTodos(json.todos);
+      });
+
     };
 
 
     // 할 일 체크 처리 함수
-    const checkTodo = id => {
+    const checkTodo = (id, done) => {
+
+      fetch(API_BASE_URL, {
+        method: 'PUT',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({
+           done: !done,
+           id: id
+        })
+      })
+      .then(res => res.json())
+      .then(json => setTodos(json.todos)); 
+
       // console.log(`체크한 Todo id: ${id}`);
 
       // const copyTodos = [...todos];
@@ -83,7 +90,7 @@ const TodoTemplate = () => {
       // }
       // setTodos(copyTodos);
 
-      setTodos(todos.map(todo => todo.id === id ? {...todo, done: !todo.done} : todo));
+      // setTodos(todos.map(todo => todo.id === id ? {...todo, done: !todo.done} : todo));
 
     };
 
@@ -92,8 +99,16 @@ const TodoTemplate = () => {
 
 
     useEffect(() => {
-      console.log(todos);
-    }, [todos]);
+      
+      fetch(API_BASE_URL)
+        .then(res => res.json())
+        .then(json => {
+          // console.log(json.todos);
+
+          setTodos(json.todos);
+        });
+
+    }, []);
 
   return (
     <div className='TodoTemplate'>
