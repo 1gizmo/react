@@ -2,9 +2,7 @@ import React from 'react'
 
 import './scss/TodoHeader.scss';
 
-
 const TodoHeader = ({ count }) => {
-
 
   const today = new Date();
 
@@ -25,4 +23,4 @@ const TodoHeader = ({ count }) => {
   )
 }
 
-export default TodoHeader
+export default TodoHeader;
