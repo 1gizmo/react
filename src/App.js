@@ -1,24 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
 import TodoTemplate from './component/todo/TodoTemplate';
-import Hader from './component/layout/Hader';
+import Header from './component/layout/Header';
 import Footer from './component/layout/Footer';
-import { Login } from '@mui/icons-material';
-import { Route, Routes } from 'react-router-dom';
 import Join from './component/user/Join';
+import Login from './component/user/Login';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
     <>
-    <Hader />
-    
-    <Routes>
-    <Route path='/' element={<TodoTemplate />} />
-    <Route path='/login'element={<Login/>} />
-    <Route path='join' element={<Join />} />
-    </Routes>
+      <Header />
 
-    <Footer />
+      <Routes>
+        <Route path='/' element={ <TodoTemplate /> } />
+        <Route path='/login' element={ <Login /> }  />
+        <Route path='/join' element={ <Join /> }  />
+        
+      </Routes>
+
+      <Footer />
     </>
   );
 }
