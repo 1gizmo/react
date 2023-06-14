@@ -1,8 +1,9 @@
 import React from 'react';
 import {Grid, Button, Container, Typography, TextField} from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { API_BASE_URL as BASE, USER } from '../../config/host-config';
+import { setLoginUserInfo } from '../../util/login-util';
 
 const Login = () => {
 
@@ -32,8 +33,14 @@ const Login = () => {
       return;
     }
 
-    const json = await res.json(); // 서버에서 온 json 읽기
+    const userInfo = await res.json(); // 서버에서 온 json 읽기
     // alert(json.userName);
+
+    // json에 담긴 인증정보를 클라이언트에 보관
+    // 1. 로컬 스토리지 - 브라우저가 종료되어도 보관됨
+    // 2. 세션 스토리지 - 브라우저가 종료되면 사라짐
+    setLoginUserInfo(userInfo);
+
 
     // 홈으로 리다이렉트
     redirection('/');
@@ -73,6 +80,7 @@ const Login = () => {
                         label="email address"
                         name="email"
                         autoComplete="email"
+                        autoFocus
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -92,11 +100,18 @@ const Login = () => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        color="primary"
+                        style={{background: '#38d9a9'}}
                     >
                         로그인
                     </Button>
                 </Grid>
+                <Grid item>
+                    <Link to="/join">
+                        회원가입을 통해 서비스를 이용하세요.
+                    </Link>
+                </Grid>
+                <Grid container justify="flex-end">
+            </Grid>
             </Grid>
         </form>
     </Container>
